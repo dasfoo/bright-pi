@@ -4,14 +4,13 @@ package bpi
 // https://www.pi-supply.com/bright-pi-v1-0-code-examples/
 
 import (
-	"github.com/kidoman/embd"
-	_ "github.com/kidoman/embd/host/all" // for multi-host support
+	"github.com/dasfoo/i2c"
 )
 
 // BrightPI i2c wrapper. Built from code examples at:
 // https://www.pi-supply.com/bright-pi-v1-0-code-examples/
 type BrightPI struct {
-	i2c     embd.I2CBus
+	i2c     *i2c.Bus
 	bpiAddr byte
 }
 
@@ -19,7 +18,7 @@ type BrightPI struct {
 const DefaultBPiAddress = 0x70
 
 // NewBrightPI creates an instance of BrightPI and sets fields
-func NewBrightPI(i2c embd.I2CBus, bpiAddr byte) *BrightPI {
+func NewBrightPI(i2c *i2c.Bus, bpiAddr byte) *BrightPI {
 	return &BrightPI{i2c: i2c, bpiAddr: bpiAddr}
 }
 
@@ -44,7 +43,7 @@ func NewBrightPI(i2c embd.I2CBus, bpiAddr byte) *BrightPI {
 * */
 
 // All lights configured at once
-func (p *BrightPI) All(white bool, ir bool) error {
+func (p *BrightPI) All(white, ir bool) error {
 	var cmd byte
 	if white {
 		cmd += 0xa5
