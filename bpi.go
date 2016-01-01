@@ -4,6 +4,8 @@ import "github.com/dasfoo/i2c"
 
 // BrightPI i2c wrapper. Built from code examples at:
 // https://www.pi-supply.com/bright-pi-v1-0-code-examples/
+// and register specification at:
+// http://www.semtech.com/images/datasheet/sc620.pdf (page 14)
 type BrightPI struct {
 	i2c     *i2c.Bus
 	bpiAddr byte
