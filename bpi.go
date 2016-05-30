@@ -18,7 +18,7 @@ import "github.com/dasfoo/i2c"
 //   // The gain value is kept, so IR leds are brighter than default. Reset the gain.
 //   b.Gain(bpi.DefaultGain)
 type BrightPI struct {
-	i2c     i2c.Bus
+	bus     i2c.Bus
 	bpiAddr byte
 }
 
@@ -26,8 +26,8 @@ type BrightPI struct {
 const DefaultAddress = 0x70
 
 // NewBrightPI creates an instance of BrightPI and sets fields
-func NewBrightPI(i2c i2c.Bus, bpiAddr byte) *BrightPI {
-	return &BrightPI{i2c: i2c, bpiAddr: bpiAddr}
+func NewBrightPI(bus i2c.Bus, bpiAddr byte) *BrightPI {
+	return &BrightPI{bus: bus, bpiAddr: bpiAddr}
 }
 
 // Led color and position
@@ -56,7 +56,7 @@ const (
 
 // Power setting for the specified LEDs (others are turned off)
 func (p *BrightPI) Power(leds byte) error {
-	return p.i2c.WriteByteToReg(p.bpiAddr, 0x00, leds)
+	return p.bus.WriteByteToReg(p.bpiAddr, 0x00, leds)
 }
 
 // Dim individual LED(s) (value range 0-MaxDim, default DefaultDim)
@@ -64,7 +64,7 @@ func (p *BrightPI) Dim(leds, value byte) error {
 	var i byte
 	for i = 0; i < 8; i++ {
 		if leds&(1<<i) > 0 {
-			if err := p.i2c.WriteByteToReg(p.bpiAddr, i+1, value); err != nil {
+			if err := p.bus.WriteByteToReg(p.bpiAddr, i+1, value); err != nil {
 				return err
 			}
 		}
@@ -74,7 +74,7 @@ func (p *BrightPI) Dim(leds, value byte) error {
 
 // Gain overall LEDs brightness (value range 0-MaxGain, default DefaultGain)
 func (p *BrightPI) Gain(value byte) error {
-	return p.i2c.WriteByteToReg(p.bpiAddr, 0x09, value)
+	return p.bus.WriteByteToReg(p.bpiAddr, 0x09, value)
 }
 
 // Sleep puts the device into minimal power consumption mode
