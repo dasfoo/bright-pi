@@ -44,7 +44,44 @@ func (d *i2cDevice) ReadSliceFromReg(addr, reg byte, data []byte) (int, error) {
 func (d *i2cDevice) SetLogger(_ i2c.Logger) {
 }
 
-func TestNewBPi(t *testing.T) {
+func TestDim(t *testing.T) {
 	dev := &i2cDevice{address: bpi.DefaultAddress, t: t}
-	bpi.NewBrightPI(dev, bpi.DefaultAddress)
+	b := bpi.NewBrightPI(dev, bpi.DefaultAddress)
+	if b.Dim(bpi.WhiteAll, bpi.MaxDim) != nil {
+		t.Error("Dimming the lights returned an error")
+	}
+	for i, reg := range []byte{1, 3, 4, 6} {
+		if dev.regs[reg+1] != bpi.MaxDim {
+			t.Error("Incorrect Dim value for light", i,
+				"expected", bpi.MaxDim, "got", dev.regs[reg+1])
+		}
+	}
+}
+
+func TestGain(t *testing.T) {
+	dev := &i2cDevice{address: bpi.DefaultAddress, t: t}
+	b := bpi.NewBrightPI(dev, bpi.DefaultAddress)
+	if b.Gain(bpi.MaxGain) != nil {
+		t.Error("Setting lights gain returned an error")
+	}
+	if dev.regs[9] != bpi.MaxGain {
+		t.Error("Invalid Gain value, expected", bpi.MaxGain, "got", dev.regs[9])
+	}
+}
+
+func TestPower(t *testing.T) {
+	dev := &i2cDevice{address: bpi.DefaultAddress, t: t}
+	b := bpi.NewBrightPI(dev, bpi.DefaultAddress)
+	if b.Power(bpi.IRAll) != nil {
+		t.Error("Setting lights power returned an error")
+	}
+	if dev.regs[0] != 165 {
+		t.Error("Invalid power value", dev.regs[0])
+	}
+	if b.Sleep() != nil {
+		t.Error("Setting sleep mode failed")
+	}
+	if dev.regs[0] != 0 {
+		t.Error("Expected Sleep() to shut down power, but got", dev.regs[0])
+	}
 }
