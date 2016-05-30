@@ -18,7 +18,7 @@ import "github.com/dasfoo/i2c"
 //   // The gain value is kept, so IR leds are brighter than default. Reset the gain.
 //   b.Gain(bpi.DefaultGain)
 type BrightPI struct {
-	i2c     *i2c.Bus
+	i2c     i2c.Bus
 	bpiAddr byte
 }
 
@@ -26,7 +26,7 @@ type BrightPI struct {
 const DefaultAddress = 0x70
 
 // NewBrightPI creates an instance of BrightPI and sets fields
-func NewBrightPI(i2c *i2c.Bus, bpiAddr byte) *BrightPI {
+func NewBrightPI(i2c i2c.Bus, bpiAddr byte) *BrightPI {
 	return &BrightPI{i2c: i2c, bpiAddr: bpiAddr}
 }
 
