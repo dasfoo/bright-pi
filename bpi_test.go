@@ -36,6 +36,11 @@ func (d *i2cDevice) ReadWordFromReg(addr, reg byte) (uint16, error) {
 	return 0, nil
 }
 
+func (d *i2cDevice) WriteSliceToReg(addr, reg byte, data []byte) (int, error) {
+	d.t.Error("Unexpected write (", len(data), ") to ", addr, ":", reg)
+	return 0, nil
+}
+
 func (d *i2cDevice) ReadSliceFromReg(addr, reg byte, data []byte) (int, error) {
 	d.t.Error("Unexpected read of ", len(data), "bytes from ", addr, ":", reg)
 	return 0, nil
